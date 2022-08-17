@@ -1,8 +1,7 @@
-import os
 from tkinter import *
 import importlib
-import urllib.request
 import requests
+import os
 
 try:
     importlib.import_module("requests")
@@ -13,7 +12,7 @@ except ImportError:
 finally:
     globals()["requests"] = importlib.import_module("requests")
 
-app_version = "1.1"
+app_version = "1.2"
 
 
 def version_control():
@@ -27,10 +26,12 @@ def version_control():
         with open(file="eisdielen_bestellung.py", mode="w", encoding="utf-8") as f:
             f.write(new_code)
             f.close()
+            
+        os.system("python eisdielen_bestellung.py")
+        exit()
 
 
 version_control()
-exit()
 app = Tk()
 options = ["Himbeere",
            "Blaubeere",
@@ -252,4 +253,4 @@ def tkinter_config():
 
 tkinter_config()
 main()
-
+app.mainloop()
