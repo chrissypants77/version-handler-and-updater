@@ -1,5 +1,7 @@
+import os
 from tkinter import *
 import importlib
+import urllib.request
 import requests
 
 try:
@@ -18,9 +20,8 @@ def version_control():
     if version != app_version:
         new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt").text
 
-        with open(file="eisdielen bestellung.py", mode="w") as f:
-            f.write(new_code)
-            f.close()
+        os.remove(rf"{os.getcwd()}\eisdielen_bestellung.py")
+        urllib.request.urlretrieve("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt", "eisdielen_bestellung.py")
 
 
 version_control()
