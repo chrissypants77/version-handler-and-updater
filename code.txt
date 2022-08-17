@@ -16,7 +16,7 @@ app_version = "1.1"
 
 
 def version_control():
-    version = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt?token=GHSAT0AAAAAABXX6VOB5WNSVCOPZKM7BX32YX5E6OA").text
+    version = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt").text
     if version != app_version:
         new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt").text
 
