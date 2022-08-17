@@ -2,8 +2,6 @@ from tkinter import *
 import importlib
 import requests
 
-# test_worked
-
 try:
     importlib.import_module("requests")
 except ImportError:
