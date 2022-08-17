@@ -1,0 +1,250 @@
+from tkinter import *
+import importlib
+import requests
+
+# test_worked
+
+try:
+    importlib.import_module("requests")
+except ImportError:
+    import pip
+    pip.main(['install', "requests"])
+finally:
+    globals()["requests"] = importlib.import_module("requests")
+
+app_version = "1.0.0"
+
+
+def version_control():
+    version = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt?token=GHSAT0AAAAAABXX6VOB5WNSVCOPZKM7BX32YX5E6OA").text
+    if version != app_version:
+        new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.py?token=GHSAT0AAAAAABXX6VOBI73YDSCXQKSPXNH2YX5FGFQ").text
+
+        with open(file="eisdielen bestellung.py", mode="w") as f:
+            f.write(new_code)
+            f.close()
+
+
+version_control()
+app = Tk()
+options = ["Himbeere",
+           "Blaubeere",
+           "Kirsche",
+           "Melone",
+           "Schokolade",
+           "Stracciatella",
+           "Haselnuss",
+           "Rum-Traube"]
+widgets = {"widgets": [], "placement": []}
+confirm_widgets = []
+order_id, time = 0, 0
+
+
+def timer():
+    global time, order_id
+    order_timer_id = None
+    if time == 0:
+        order_info.after_cancel(order_info.after_idle(order_info))
+        order_info.destroy()
+        order_id += 1
+        main_page()
+        return
+    time -= 1
+    order_info.configure(text=f"Ihre Bestellung Wurde Aufgenomen\r\r"
+                              f"Bestellungs ID: {order_id}\r\r"
+                              f"Zurück zum Bestellungs Menu in: {time}")
+    order_info.after(1000, lambda: (timer()))
+
+
+def send_order():
+    global widgets, confirm_widgets, time, order_info
+    time = 10
+    widgets = {"widgets": [], "placement": []}
+    for i in confirm_widgets:
+        i.destroy()
+    confirm_widgets = []
+
+    order_info = Label(text=f"Ihre Bestellung Wurde Aufgenomen\r\r"
+                            f"Bestellungs ID: {order_id}\r\r"
+                            f"Zurück zum Bestellungs Menu in: {time}", font=("Arial", 12, "bold"))
+    order_info.pack()
+    order_info.after(1000, lambda: (timer()))
+
+
+def replace_main():
+    for i in confirm_widgets:
+        i.destroy()
+    for i in range(0, len(widgets["widgets"])):
+        if widgets["placement"][i] == "pack":
+            widgets["widgets"][i].pack()
+        else:
+            widgets["widgets"][i].place(x=widgets["placement"][i][0], y=widgets["placement"][i][1])
+
+
+def confirm_order(items):
+    for i in widgets["widgets"]:
+        i.place_forget()
+        i.pack_forget()
+
+    if items[3] == "Anzahl: 0":
+        items[1] = "Sorte 2: /"
+        items[3] = "Anzahl: /"
+
+    if items[4] == "Extras:\r\r":
+        items[4] = "Extras:\rKeine"
+
+    if items[5] == "Anmerkungen:\r":
+        items[5] += "Keine"
+
+    question = Label(text="Überischt über die bestellung", font=("Arial", 12, "bold"))
+    question.pack()
+    confirm_widgets.append(question)
+
+    overview = Message(text=f"{items[0]}\r{items[2]}\r\r{items[1]}\r{items[3]}\r\r{items[4]}\r\r{items[5]}",
+                       font=("Arial", 11, "bold"))
+    overview.pack()
+    confirm_widgets.append(overview)
+
+    back = Button(text="Bestellung bearbeiten", font=("Arial", 12, "bold"), command=lambda: (replace_main()))
+    back.pack(pady=4)
+    confirm_widgets.append(back)
+
+    order = Button(text="Bestellung abgeben", font=("Arial", 12, "bold"), command=lambda: (send_order()))
+    order.pack(pady=7)
+    confirm_widgets.append(order)
+
+
+def check_amount(which):
+    am_1_2 = amount_var_int.get() + amount_var_int2.get()
+    if which == "1":
+        while am_1_2 >= 7:
+            if am_1_2 >= 7:
+                amount_var_int.set(amount_var_int.get()-1)
+                am_1_2 = amount_var_int.get() + amount_var_int.get()
+    else:
+        while am_1_2 >= 7:
+            if am_1_2 >= 7:
+                amount_var_int2.set(amount_var_int2.get()-1)
+                am_1_2 = amount_var_int.get() + amount_var_int2.get()
+
+
+def main_page():
+    global amount_var_int, amount_var_int2
+    title = Label(text="Eisbecher-Bestellung", font=("Arial", 12, "bold"))
+    title.pack()
+    widgets["widgets"].append(title)
+    widgets["placement"].append("pack")
+
+    choice_label = Label(text="Wählen sie die Sorte aus")
+    choice_label.pack()
+    widgets["widgets"].append(choice_label)
+    widgets["placement"].append("pack")
+
+    choice_label2 = Label(text="Erste Sorte")
+    choice_label2.place(x=30, y=55)
+    widgets["widgets"].append(choice_label2)
+    widgets["placement"].append([30, 55])
+
+    choice_label3 = Label(text="Zweite Sorte\r(nicht pflicht)")
+    choice_label3.place(x=190, y=55)
+    widgets["widgets"].append(choice_label3)
+    widgets["placement"].append([190, 55])
+
+    choice_var_str = StringVar()
+    choice_var_str.set(options[0])
+    choice_select = OptionMenu(app, choice_var_str, *options)
+    choice_select.place(x=10, y=90)
+    widgets["widgets"].append(choice_select)
+    widgets["placement"].append([10, 90])
+
+    choice_var_str2 = StringVar()
+    choice_var_str2.set(options[0])
+    choice_select2 = OptionMenu(app, choice_var_str2, *options)
+    choice_select2.place(x=180, y=90)
+    widgets["widgets"].append(choice_select2)
+    widgets["placement"].append([180, 90])
+
+    amount_label = Label(text="Kugel Anzahl Auswählen\rMaximum sind\r6 insgesamt")
+    amount_label.place(x=80, y=145)
+    widgets["widgets"].append(amount_label)
+    widgets["placement"].append([80, 145])
+
+    amount_var_int = IntVar()
+    amount_spinbox = Spinbox(from_=1,
+                             to=6,
+                             textvariable=amount_var_int,
+                             wrap=True,
+                             width=10,
+                             command=lambda: (check_amount("1")))
+    amount_spinbox.place(x=13, y=170)
+    widgets["widgets"].append(amount_spinbox)
+    widgets["placement"].append([13, 170])
+
+    amount_var_int2 = IntVar()
+    amount_spinbox2 = Spinbox(from_=0,
+                              to=5,
+                              textvariable=amount_var_int2,
+                              wrap=True,
+                              width=10,
+                              command=lambda: (check_amount("2")))
+    amount_spinbox2.place(x=200, y=170)
+    widgets["widgets"].append(amount_spinbox2)
+    widgets["placement"].append([200, 170])
+
+    extras_label = Label(text="Zusätze")
+    extras_label.place(x=125, y=210)
+    widgets["widgets"].append(extras_label)
+    widgets["placement"].append([125, 210])
+
+    extras_var_str = StringVar()
+    extras_checkbutton = Checkbutton(text="Schokosauce", onvalue="Schokosauce", offvalue="", variable=extras_var_str)
+    extras_checkbutton.place(x=98, y=230)
+    widgets["widgets"].append(extras_checkbutton)
+    widgets["placement"].append([98, 230])
+
+    extras_var_str2 = StringVar()
+    extras_checkbutton2 = Checkbutton(text="Erdbeeren", onvalue="Erdbeeren", offvalue="", variable=extras_var_str2)
+    extras_checkbutton2.place(x=98, y=250)
+    widgets["widgets"].append(extras_checkbutton2)
+    widgets["placement"].append([98, 250])
+
+    notes_label = Label(text="Anmerkungen")
+    notes_label.place(x=108, y=290)
+    widgets["widgets"].append(notes_label)
+    widgets["placement"].append([108, 290])
+
+    notes_entry = Text(width=20, height=3)
+    notes_entry.place(x=67, y=315)
+    widgets["widgets"].append(notes_entry)
+    widgets["placement"].append([67, 315])
+
+    order_button = Button(text="Bestellen",
+                          width=10,
+                          height=2,
+                          command=lambda: confirm_order(["Sorte 1: "+choice_var_str.get(),
+                                                         "Sorte 2: "+choice_var_str2.get(),
+                                                         "Anzahl: "+str(amount_var_int.get()),
+                                                         "Anzahl: "+str(amount_var_int2.get()),
+                                                         "Extras:\r"+extras_var_str.get()+"\r"+extras_var_str2.get(),
+                                                         "Anmerkungen:\r"+notes_entry.get("1.0", "end-1c")]))
+    order_button.place(x=107, y=386)
+    widgets["widgets"].append(order_button)
+    widgets["placement"].append([107, 386])
+
+
+def main():
+    ver = Label(text="Created by: chris\r\rVersion 1.0.0", font=("Arial", 12, "bold"))
+    ver.pack()
+    ver.after(2000, lambda: (ver.destroy(), main_page()))
+
+
+def tkinter_config():
+    app.geometry("300x450")
+    app.wm_resizable(False, False)
+    app.title("Deez-Eisdiele")
+    app.attributes("-topmost", True)
+
+
+tkinter_config()
+main()
+app.mainloop()
