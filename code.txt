@@ -8,20 +8,27 @@ try:
     importlib.import_module("requests")
 except ImportError:
     import pip
+
     pip.main(['install', "requests"])
 finally:
     globals()["requests"] = importlib.import_module("requests")
 
-app_version = "1.2"
+app_version = "1.1"
 
 
 def version_control():
-    version = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt").text
+    version = requests.get(
+        "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt").text
     if version != app_version:
-        new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt").text
+        new_code = requests.get(
+            "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt").text
 
         os.remove(rf"{os.getcwd()}\eisdielen_bestellung.py")
-        urllib.request.urlretrieve("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt", "eisdielen_bestellung.py")
+        urllib.request.urlretrieve(
+            "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt",
+            "eisdielen_bestellung.py")
+
+        os.system(rf"py {os.getcwd()}\eisdielen_bestellung.py")
 
 
 version_control()
