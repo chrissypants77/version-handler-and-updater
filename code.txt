@@ -18,7 +18,7 @@ app_version = "1.0.1"
 def version_control():
     version = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt?token=GHSAT0AAAAAABXX6VOB5WNSVCOPZKM7BX32YX5E6OA").text
     if version != app_version:
-        new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.py?token=GHSAT0AAAAAABXX6VOBI73YDSCXQKSPXNH2YX5FGFQ").text
+        new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt").text
 
         with open(file="eisdielen bestellung.py", mode="w") as f:
             f.write(new_code)
