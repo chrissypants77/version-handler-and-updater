@@ -18,17 +18,16 @@ app_version = "1.2"
 def version_control():
     version = requests.get(
         "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt").text
+    print(version, app_version)
     if version != app_version:
         new_code = requests.get(
             "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt", "UTF-8").text
-        print(new_code)
 
         with open(file="eisdielen_bestellung.py", mode="w", encoding="utf-8") as f:
             f.write(new_code)
             f.close()
             
         os.system("python eisdielen_bestellung.py")
-        exit()
 
 
 version_control()
