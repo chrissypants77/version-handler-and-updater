@@ -8,6 +8,7 @@ try:
     importlib.import_module("requests")
 except ImportError:
     import pip
+
     pip.main(['install', "requests"])
 finally:
     globals()["requests"] = importlib.import_module("requests")
@@ -16,17 +17,20 @@ app_version = "1.1"
 
 
 def version_control():
-    version = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt").text
+    version = requests.get(
+        "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/version.txt").text
     if version != app_version:
-        new_code = requests.get("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt").text
+        new_code = requests.get(
+            "https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt", "UTF-8").text
+        print(new_code)
 
-        os.remove(rf"{os.getcwd()}\eisdielen_bestellung.py")
-        urllib.request.urlretrieve("https://raw.githubusercontent.com/chrissypants77/version-handler-and-updater/main/code.txt", "eisdielen_bestellung.py")
-
-        os.system(rf"py {os.getcwd()}\eisdielen_bestellung.py")
+        with open(file="eisdielen_bestellung.py", mode="w", encoding="utf-8") as f:
+            f.write(new_code)
+            f.close()
 
 
 version_control()
+exit()
 app = Tk()
 options = ["Himbeere",
            "Blaubeere",
@@ -120,12 +124,12 @@ def check_amount(which):
     if which == "1":
         while am_1_2 >= 7:
             if am_1_2 >= 7:
-                amount_var_int.set(amount_var_int.get()-1)
+                amount_var_int.set(amount_var_int.get() - 1)
                 am_1_2 = amount_var_int.get() + amount_var_int.get()
     else:
         while am_1_2 >= 7:
             if am_1_2 >= 7:
-                amount_var_int2.set(amount_var_int2.get()-1)
+                amount_var_int2.set(amount_var_int2.get() - 1)
                 am_1_2 = amount_var_int.get() + amount_var_int2.get()
 
 
@@ -222,19 +226,19 @@ def main_page():
     order_button = Button(text="Bestellen",
                           width=10,
                           height=2,
-                          command=lambda: confirm_order(["Sorte 1: "+choice_var_str.get(),
-                                                         "Sorte 2: "+choice_var_str2.get(),
-                                                         "Anzahl: "+str(amount_var_int.get()),
-                                                         "Anzahl: "+str(amount_var_int2.get()),
-                                                         "Extras:\r"+extras_var_str.get()+"\r"+extras_var_str2.get(),
-                                                         "Anmerkungen:\r"+notes_entry.get("1.0", "end-1c")]))
+                          command=lambda: confirm_order(["Sorte 1: " + choice_var_str.get(),
+                                                         "Sorte 2: " + choice_var_str2.get(),
+                                                         "Anzahl: " + str(amount_var_int.get()),
+                                                         "Anzahl: " + str(amount_var_int2.get()),
+                                                         "Extras:\r" + extras_var_str.get() + "\r" + extras_var_str2.get(),
+                                                         "Anmerkungen:\r" + notes_entry.get("1.0", "end-1c")]))
     order_button.place(x=107, y=386)
     widgets["widgets"].append(order_button)
     widgets["placement"].append([107, 386])
 
 
 def main():
-    ver = Label(text="Created by: chris\r\rVersion 1.0.0", font=("Arial", 12, "bold"))
+    ver = Label(text=f"Created by: chris\r\rVersion {app_version}", font=("Arial", 12, "bold"))
     ver.pack()
     ver.after(2000, lambda: (ver.destroy(), main_page()))
 
