@@ -1,19 +1,18 @@
 import ast
+import urllib.request
 from tkinter import *
 import importlib
-import requests
 import os
 
-try:
-    importlib.import_module("requests")
-except ImportError:
-    import pip
+app_version = "1.3"
 
-    pip.main(['install', "requests"])
-finally:
-    globals()["requests"] = importlib.import_module("requests")
 
-app_version = "1.2"
+def check_internet():
+    try:
+        urllib.request.urlopen("http://google.com")
+        return True
+    except:
+        return False
 
 
 def version_control():
@@ -31,7 +30,21 @@ def version_control():
         os.system("python eisdielen_bestellung.py")
 
 
-version_control()
+if check_internet() is True:
+
+    try:
+        importlib.import_module("requests")
+    except ImportError:
+        import pip
+
+        pip.main(['install', "requests"])
+    finally:
+        import requests
+
+    version_control()
+    internet = True
+else:
+    internet = False
 app = Tk()
 options = ["Himbeere",
            "Blaubeere",
@@ -239,9 +252,14 @@ def main_page():
 
 
 def main():
+    wait_time = 2000
     ver = Label(text=f"Created by: chris\r\rVersion {app_version}", font=("Arial", 12, "bold"))
     ver.pack()
-    ver.after(2000, lambda: (ver.destroy(), main_page()))
+    if internet is False:
+        internet_error = Label(text=f"OFFLINE\rcant check version\rusable but beware of bugs!!", font=("Arial", 14, "bold"), fg="red")
+        internet_error.pack(pady=10)
+        wait_time += 1500
+    app.after(wait_time, lambda: (ver.destroy(), internet_error.destroy(), main_page()))
 
 
 def tkinter_config():
