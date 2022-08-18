@@ -111,13 +111,13 @@ def label(text=str(), font=None, fg=None, which_list=None, extras=dict()):
 def timer():
     global time, order_id
     order_timer_id = None
+    time -= 1
     if time == 0:
         order_info.after_cancel(order_info.after_idle(order_info))
         order_info.destroy()
         order_id += 1
         main_page()
         return
-    time -= 1
     order_info.configure(text=f"Ihre Bestellung Wurde Aufgenomen\r\r"
                               f"Bestellungs ID: {order_id}\r\r"
                               f"Zurück zum Bestellungs Menu in: {time}")
