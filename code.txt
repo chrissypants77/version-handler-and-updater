@@ -28,7 +28,8 @@ def version_control():
             f.close()
 
         os.system("python eisdielen_bestellung.py")
-
+        exit()
+        
 
 if check_internet() is True:
 
