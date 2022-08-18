@@ -62,7 +62,9 @@ order_id, time = 0, 0
 
 def button(text=str(), font=None, command=None, which_list=None, width=None, height=None, extras=dict()):
     b1 = Button(text=text, font=font, height=height, width=width, command=command)
-    if extras["placement_type"] == "pack":
+    if extras["placement_type"] == "None":
+        return b1
+    elif extras["placement_type"] == "pack":
         b1.pack(pady=extras["pady"])
     else:
         b1.place(x=extras["x"], y=extras["y"])
@@ -86,7 +88,9 @@ def button(text=str(), font=None, command=None, which_list=None, width=None, hei
 def label(text=str(), font=None, fg=None, which_list=None, extras=dict()):
     global widgets
     l1 = Label(text=text, font=font, fg=fg)
-    if extras["placement_type"] == "pack":
+    if extras["placement_type"] == "None":
+        return l1
+    elif extras["placement_type"] == "pack":
         l1.pack(pady=extras["pady"])
     else:
         l1.place(x=extras["x"], y=extras["y"])
@@ -308,13 +312,12 @@ def main():
                 which_list=None,
                 extras={"placement_type": "pack", "pady": 1,
                         "after": False})
+    internet_error = label(text=f"OFFLINE\rcant check version\rusable but beware of bugs!!",
+                           font=("Arial", 14, "bold"),
+                           fg="red",
+                           extras={"placement_type": "None"})
     if internet is False:
-        internet_error = label(text=f"OFFLINE\rcant check version\rusable but beware of bugs!!",
-                               font=("Arial", 14, "bold"),
-                               fg="red",
-                               which_list=None,
-                               extras={"placement_type": "pack", "pady": 10,
-                                       "after": False})
+        internet_error.pack(pady=10)
         wait_time += 1500
     app.after(wait_time, lambda: (ver.destroy(), internet_error.destroy(), main_page()))
 
