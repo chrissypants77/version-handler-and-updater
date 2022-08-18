@@ -126,7 +126,7 @@ def timer():
 
 def send_order():
     global widgets, confirm_widgets, time, order_info
-    time = 10
+    time = 5
     widgets = {"widgets": [], "placement": []}
     for i in confirm_widgets:
         i.destroy()
