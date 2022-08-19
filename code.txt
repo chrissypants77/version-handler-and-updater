@@ -4,7 +4,7 @@ from tkinter import *
 import importlib
 import os
 
-app_version = "1.4"
+app_version = "1.5"
 
 
 def check_internet():
@@ -29,7 +29,7 @@ def version_control():
 
         os.system("python eisdielen_bestellung.py")
         exit()
-        
+
 
 if check_internet() is True:
 
@@ -47,6 +47,7 @@ if check_internet() is True:
 else:
     internet = False
 
+check_internet()
 app = Tk()
 options = ["Himbeere",
            "Blaubeere",
@@ -194,7 +195,7 @@ def check_amount(which):
         while am_1_2 >= 7:
             if am_1_2 >= 7:
                 amount_var_int.set(amount_var_int.get() - 1)
-                am_1_2 = amount_var_int.get() + amount_var_int.get()
+                am_1_2 = amount_var_int.get() + amount_var_int2.get()
     else:
         while am_1_2 >= 7:
             if am_1_2 >= 7:
@@ -249,7 +250,8 @@ def main_page():
                              to=6,
                              textvariable=amount_var_int,
                              wrap=True,
-                             width=10,
+                             width=7,
+                             font=("Arial", 12),
                              command=lambda: (check_amount("1")))
     amount_spinbox.place(x=13, y=170)
     widgets["widgets"].append(amount_spinbox)
@@ -260,7 +262,8 @@ def main_page():
                               to=5,
                               textvariable=amount_var_int2,
                               wrap=True,
-                              width=10,
+                              width=7,
+                              font=("Arial", 12),
                               command=lambda: (check_amount("2")))
     amount_spinbox2.place(x=200, y=170)
     widgets["widgets"].append(amount_spinbox2)
